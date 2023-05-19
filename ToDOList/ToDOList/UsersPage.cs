@@ -1,22 +1,75 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
+
 
 namespace ToDOList
 {
-    public class UsersPage
+    internal class UsersPage
     {
+        private readonly string userNameMesssage = "Please Insert your Name: ";
+        private readonly string taskTitleMesssage = "Enter task title: ";
+        private readonly string taskDescriptionMesssage = "Enter task description: ";
+        private readonly string taskDueDateMesssage = "Enter due date (YYYY-MM-DD): ";
+        private readonly string DueDateEditMesssage = "Enter current or future date (YYYY-MM-DD)";
+        private readonly string taskpriorityMesssage = "Enter priority level ('Low', 'Medium', 'High'): ";
+        static readonly int tableWidth = 90;
+        private readonly DateTime currentDate = DateTime.Now.Date;
         public List<UserLogins> users = new List<UserLogins>();
-        public UserLogins currentUser = null;
+        public UserLogins currentUser = new UserLogins();
 
+        public void MainMenu()
+        {
+            while (true)
+            {
+                Console.WriteLine("1. Register");
+                Console.WriteLine("2. Login");
+                Console.WriteLine("3. Exit");
+
+                int choice;
+                while (true)
+                {
+                    Console.Write("Enter your choice: ");
+                    if (int.TryParse(Console.ReadLine(), out choice))
+                    {
+                        if (choice >= 1 && choice <= 3)
+                        {
+                            break;
+                        }
+                    }
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid response. Please enter a number between 1 and 3.");
+                    Console.ResetColor();
+                }
+                Console.WriteLine();
+
+                switch (choice)
+                {
+                    case 1:
+                        Register();
+                        break;
+                    case 2:
+                        Login();
+                        break;
+                    case 3:
+                        Console.Clear();
+                        Console.WriteLine("Exiting application...");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
+                Console.WriteLine();
+            }
+        }
 
         public bool UserExist(string email)
         {
-            foreach(UserLogins user in users)
+            foreach (UserLogins user in users)
             {
-                if(user.email == email)
+                if (user.Email == email)
                 {
                     return true;
                 }
@@ -25,32 +78,30 @@ namespace ToDOList
         }
         public void Register()
         {
+            Console.Clear();
             string fName;
-            bool isValid = false;
-
-            do
+            Console.Write(userNameMesssage);
+            while (true)
             {
-                Console.Write("Enter your Name: ");
-                fName = Console.ReadLine();
+                fName = Console.ReadLine().Trim();
 
-                if (!int.TryParse(fName, out _) &&
-                    !double.TryParse(fName, out _) &&
-                    !DateTime.TryParse(fName, out _))
+                bool checkUserName = Validations.ValidateEntry(fName);
+                if (string.IsNullOrEmpty(fName))
                 {
-                    isValid = true;
+                    DisplayErrorMessage("Name cannot be empty. try again", userNameMesssage);
+                }
+                else if (!checkUserName)
+                {
+                    DisplayErrorMessage("Name Shouldn't contain digits or symbols", userNameMesssage);
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Invalid input. Please enter a string.");
-                    Console.ResetColor();
+                    break;
                 }
-            } while (!isValid);
-
+            }
 
             string email;
             bool isCorrect = false;
-
             do
             {
                 Console.Write("Enter an email address: ");
@@ -59,6 +110,13 @@ namespace ToDOList
                 if (Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
                     isCorrect = true;
+                    while (UserExist(email))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("Username already exists. Try again.: ");
+                        Console.ResetColor();
+                        email = Console.ReadLine();
+                    }
                 }
                 else
                 {
@@ -68,10 +126,10 @@ namespace ToDOList
                 }
             } while (!isCorrect);
 
-
             string password;
             bool isRight = false;
-
+            string password2;
+            bool isSame = false;
             do
             {
                 Console.Write("Create a password: ");
@@ -91,54 +149,38 @@ namespace ToDOList
                     Console.ResetColor();
                 }
             } while (!isRight);
-            
 
+
+            do
+            {
+                Console.Write("Confirm Password: ");
+                password2 = Console.ReadLine();
+                if (password == password2)
+                {
+                    isSame = true;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid password. Password does not match.");
+                    Console.ResetColor();
+                }
+            } while (!isSame);
             UserLogins user = new UserLogins(fName, email, password);
 
-            if(UserExist(email))
-            {
-                Console.ForegroundColor= ConsoleColor.Red;
-                Console.WriteLine("Username already exists. Try again.");
-                Console.ResetColor();
-                return;
-            }
-            
             currentUser = user;
             users.Add(currentUser);
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Registration successful!");
             Console.ResetColor();
-        }
 
-        public UserLogins GetUserLogin(string email, string password)
-        {
-            foreach (UserLogins user in users)
-            {
-                if(user.email == email && user.password == password)
-                {
-                    return user;
-                }
-            }
-            return null;
-        }
-
-        public void Login()
-        {
-            Console.Write("Enter email: ");
-            string email = Console.ReadLine();
-
-            Console.Write("Enter password: ");
-            string password = Console.ReadLine();
-
-            UserLogins user = GetUserLogin(email, password);
-
-            if(user == null)
+            if (user == null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Invalid email or password. Try again.");
                 Console.ResetColor();
-                return;
+
             }
             currentUser = user;
             Console.Clear();
@@ -156,7 +198,6 @@ namespace ToDOList
                 Console.WriteLine("5. Complete task");
                 Console.WriteLine("6. Logout");
 
-               
                 int userResponse1;
                 while (true)
                 {
@@ -191,6 +232,98 @@ namespace ToDOList
                         CompleteTask();
                         break;
                     case 6:
+                        Console.Clear();
+                        Console.WriteLine("Logging out... Thank You!");
+                        currentUser = null;
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Try again.");
+                        break;
+                }
+            }
+        }
+
+        public UserLogins GetUserLogin(string email, string password)
+        {
+            foreach (UserLogins user in users)
+            {
+                if (user.Email == email && user.Password == password)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+
+        public void Login()
+        {
+            Console.Clear();
+            Console.Write("Enter email: ");
+            string email = Console.ReadLine();
+
+            Console.Write("Enter password: ");
+            string password = Console.ReadLine();
+
+            UserLogins user = GetUserLogin(email, password);
+
+            if (user == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid email or password. Try again.");
+                Console.ResetColor();
+                return;
+            }
+            currentUser = user;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Welcome {0}!", email);
+            Console.ResetColor();
+
+            while (true)
+            {
+                Console.WriteLine();
+                Console.WriteLine("1. Add task");
+                Console.WriteLine("2. View all tasks");
+                Console.WriteLine("3. Edit task");
+                Console.WriteLine("4. Delete task");
+                Console.WriteLine("5. Complete task");
+                Console.WriteLine("6. Logout");
+
+                int userResponse1;
+                while (true)
+                {
+                    Console.Write("Enter your choice: ");
+                    if (int.TryParse(Console.ReadLine(), out userResponse1))
+                    {
+                        if (userResponse1 >= 1 && userResponse1 <= 6)
+                        {
+                            break;
+                        }
+                    }
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid response. Please enter number between 1 and 6");
+                    Console.ResetColor();
+                }
+
+                switch (userResponse1)
+                {
+                    case 1:
+                        AddTask();
+                        break;
+                    case 2:
+                        ViewAllTasks();
+                        break;
+                    case 3:
+                        EditTask();
+                        break;
+                    case 4:
+                        DeleteTask();
+                        break;
+                    case 5:
+                        CompleteTask();
+                        break;
+                    case 6:
+                        Console.Clear();
                         Console.WriteLine("Logging out...");
                         currentUser = null;
                         return;
@@ -204,55 +337,133 @@ namespace ToDOList
 
         public void AddTask()
         {
-            Console.Write("Enter task title: ");
-            string title = Console.ReadLine();
+            Console.Clear();
+            string title;
+            Console.Write(taskTitleMesssage);
 
-            Console.Write("Enter task description: ");
-            string description = Console.ReadLine();
-
-            Console.Write("Enter due date (YYYY-MM-DD): ");
-            DateTime dueDate = DateTime.Parse(Console.ReadLine());
-
-
-            string priorityLevel;
-            bool isTrue = false;
-
-            do
+            while (true)
             {
-                Console.Write("Enter priority level ('Low', 'Medium', 'High')");
-                priorityLevel = Console.ReadLine();
-
-                if (!int.TryParse(priorityLevel, out _) &&
-                    !double.TryParse(priorityLevel, out _) &&
-                    !DateTime.TryParse(priorityLevel, out _))
+                title = Console.ReadLine().Trim();
+                if (string.IsNullOrEmpty(title))
                 {
-                    isTrue = true;
+                    DisplayErrorMessage("Title cannot be empty. try again", taskTitleMesssage);
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Invalid input. Please enter valid priority level ('Low', 'Medium', 'High')");
-                    Console.ResetColor();
+                    break;
                 }
-            } while (!isTrue);
+
+            }
+            string description;
+            Console.Write(taskDescriptionMesssage);
+
+            while (true)
+            {
+                description = Console.ReadLine().Trim();
+                if (string.IsNullOrEmpty(description))
+                {
+                    DisplayErrorMessage("Description cannot be empty. try again", taskDescriptionMesssage);
+                }
+                else
+                {
+                    break;
+                }
+
+            }
+            DateTime dueDate;
+
+            Console.Write(taskDueDateMesssage);
+
+            while (!DateTime.TryParse(Console.ReadLine(), out dueDate) || dueDate <= currentDate)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                DisplayErrorMessage("Invalid date.", taskDueDateMesssage);
+            }
+
+            string priorityLevel;
+            Console.Write(taskpriorityMesssage);
+
+            do
+            {
+                priorityLevel = Console.ReadLine();
+                bool checkPriority = Validations.ValidatePriorityLevel(priorityLevel);
+                if (string.IsNullOrEmpty(priorityLevel))
+                {
+                    DisplayErrorMessage("Priority level cannot be empty.", taskpriorityMesssage);
+                }
+                else if (checkPriority)
+                {
+                    DisplayErrorMessage("Invalid priority level.", taskpriorityMesssage);
+                }
+                else
+                {
+                    break;
+                }
+            } while (priorityLevel.ToLower() != "low" && priorityLevel.ToLower() != "medium" && priorityLevel.ToLower() != "high");
 
             Task task = new Task(title, description, dueDate, priorityLevel);
             currentUser.tasks.Add(task);
+            task.Id = currentUser.Id;
 
             Console.Clear();
-            Console.WriteLine("Task added successfully!"); 
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Task added successfully!");
+            Console.ResetColor();
+        }
+
+        static void PrintLine()
+        {
+            Console.WriteLine(new string('-', tableWidth));
+        }
+
+        static void PrintRow(params string[] columns)
+        {
+            int width = (tableWidth - columns.Length + 1) / columns.Length;
+            string row = "|";
+            foreach (string column in columns)
+            {
+                row += AlignCentre(column, width) + "|";
+            }
+            Console.WriteLine(row);
+        }
+
+        static string AlignCentre(string text, int width)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return new string(' ', width);
+            }
+            text = text.Length > width ? text.Substring(0, width - 3) + "..." : text;
+            return text.PadRight(width - (width - text.Length) / 2).PadLeft(width);
+        }
+
+        static string CentreText(string text, int width)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return new string(' ', width);
+            }
+            int totalSpaces = width - text.Length;
+            int leftSpaces = totalSpaces / 2;
+            return new string(' ', leftSpaces) + text + new string(' ', totalSpaces - leftSpaces);
         }
 
         public void ViewAllTasks()
         {
-            Console.WriteLine("|------------------------------------------------------------------|");
-            Console.WriteLine("| ID | Title              | Description          | Due Date        |");
-            Console.WriteLine("|----|--------------------|----------------------|-----------------|");
-            foreach(Task task in currentUser.tasks)
+            Console.Clear();
+            Console.WriteLine(CentreText("Todo App", tableWidth));
+            Console.WriteLine();
+            Console.WriteLine($"Name: {currentUser.Name}\nEmail: {currentUser.Email}\nUserID: {currentUser.Id}\nNumber of Tasks: {currentUser.tasks.Count}");
+            PrintLine();
+            PrintRow("ID", "TITLE", "DESCRIPTION", "DUE DATE", "PRIORITY", "STATUS");
+            PrintLine();
+            foreach (Task task in currentUser.tasks)
             {
-                Console.WriteLine("|{0,-4}|{1,-20}|{2,-22}|{3,-17}|", task.id, task.title, task.description, task.dueDate.ToString("MM/dd/yyyy"));
+                int index = currentUser.tasks.IndexOf(task) + 1;
+                PrintRow(index.ToString(), task.title, task.description,
+                    task.dueDate.ToShortDateString(), task.priorityLevel, task.status);
             }
-            Console.WriteLine("|------------------------------------------------------------------|");
+            PrintLine();
         }
 
         public Task GetTaskById(int id)
@@ -261,22 +472,32 @@ namespace ToDOList
             {
                 if (task.id == id)
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Task Title: {task.title}");
+                    Console.WriteLine($"Task Description: {task.description}");
+                    Console.WriteLine($"Task Due Date: {task.dueDate}");
+                    Console.WriteLine($"Task Priority Level: {task.priorityLevel}");
+                    Console.WriteLine($"Task Status: {task.status}");
+                    Console.ResetColor();
                     return task;
                 }
             }
 
             return null;
         }
+
         public void EditTask()
         {
-            Console.Write("Enter task ID: ");
-            int id = Convert.ToInt32(Console.ReadLine());
+            int id = Validations.ValidateEdit("Enter task ID to Edit: ");
 
+            Console.Clear();
             Task taskToEdit = GetTaskById(id);
 
             if (taskToEdit == null)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Task not found. Try again.");
+                Console.ResetColor();
                 return;
             }
 
@@ -287,6 +508,7 @@ namespace ToDOList
                 taskToEdit.title = newTitle;
             }
 
+
             Console.Write("Enter new description (or press enter to keep the current description): ");
             string newDescription = Console.ReadLine();
             if (!string.IsNullOrEmpty(newDescription))
@@ -294,29 +516,65 @@ namespace ToDOList
                 taskToEdit.description = newDescription;
             }
 
-            Console.Write("Enter new due date -YYYY-MM-DD (or press enter to keep the current due date): ");
-            string newDueDate = (Console.ReadLine());
-            if (!string.IsNullOrEmpty(newDueDate))
+            while (true)
             {
-                taskToEdit.dueDate = DateTime.Parse(newDueDate);
+                Console.Write("Enter new due date (YYYY-MM-DD) or press enter to keep the current due date: ");
+                string newDueDate = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(newDueDate))
+                {
+                    break;
+                }
+                if (DateTime.TryParse(newDueDate, out DateTime userInput))
+                {
+                    if (userInput.Date >= DateAndTime.Now)
+                    {
+                        taskToEdit.dueDate = userInput;
+                        break;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(DueDateEditMesssage);
+                        Console.ResetColor();
+                    }
+                }
+                break;
             }
 
-            Console.Write("Enter new priority level (or press enter to keep the current priority level): ");
-            string newPriorityLevel = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newPriorityLevel))
+            while (true)
             {
-                taskToEdit.priorityLevel = newPriorityLevel;
+                Console.Write("Enter new priority level (or press enter to keep the current priority level): ");
+                string newPriorityLevel = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(newPriorityLevel))
+                {
+                    break;
+                }
+                else if (!Validations.ValidatePriorityLevel(newPriorityLevel))
+                {
+                    taskToEdit.priorityLevel = newPriorityLevel;
+                    break;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(taskpriorityMesssage);
+                    Console.ResetColor();
+                }
             }
-            
+
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Task edited successfully!");
+            Console.ResetColor();
         }
 
         public Task GetTask(int id)
         {
-            foreach(Task task in currentUser.tasks)
+            foreach (Task task in currentUser.tasks)
             {
-                if(task.id == id)
+                if (task.id == id)
                 {
                     return task;
                 }
@@ -325,14 +583,12 @@ namespace ToDOList
         }
         public void DeleteTask()
         {
-            Console.Write("Enter task ID: ");
-            int id = Convert.ToInt32(Console.ReadLine());
-
+            int id = Validations.ValidateEdit("Enter task ID to Delete: ");
             Task task = GetTask(id);
 
             if (task == null)
             {
-                Console.ForegroundColor= ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Task not found. Try again.");
                 Console.ResetColor();
                 return;
@@ -347,14 +603,12 @@ namespace ToDOList
 
         public void CompleteTask()
         {
-            Console.Write("Enter task ID: ");
-            int id = Convert.ToInt32(Console.ReadLine());
-
+            int id = Validations.ValidateEdit("Enter task ID to Complete: ");
             Task task = GetTask(id);
 
             if (task == null)
             {
-                Console.ForegroundColor=( ConsoleColor.Red);
+                Console.ForegroundColor = (ConsoleColor.Red);
                 Console.WriteLine("Task not found. Try again.");
                 Console.ResetColor();
                 return;
@@ -366,6 +620,21 @@ namespace ToDOList
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Task completed successfully!");
             Console.ResetColor();
+        }
+
+        private static void DisplayErrorMessage(string message, string retryMessage)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Error: {message}");
+            Console.ResetColor();
+            Console.WriteLine(retryMessage);
+        }
+
+        public void Start()
+        {
+            Console.WriteLine("\t<<<<<<<<<<<<<<<<<<<<<<<<< WELCOME! >>>>>>>>>>>>>>>>>>>>>>>>>\t");
+
+            MainMenu();
         }
     }
 }

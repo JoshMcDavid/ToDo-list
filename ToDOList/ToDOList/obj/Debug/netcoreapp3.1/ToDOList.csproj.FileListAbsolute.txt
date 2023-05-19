@@ -26,3 +26,17 @@ C:\Users\Olorunshola.j\Documents\Assignments\task_todo_application-JoshMcDavid\T
 C:\Users\Olorunshola.j\Documents\Assignments\task_todo_application-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.dll
 C:\Users\Olorunshola.j\Documents\Assignments\task_todo_application-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.pdb
 C:\Users\Olorunshola.j\Documents\Assignments\task_todo_application-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.genruntimeconfig.cache
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\bin\Debug\netcoreapp3.1\ToDOList.exe
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\bin\Debug\netcoreapp3.1\ToDOList.deps.json
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\bin\Debug\netcoreapp3.1\ToDOList.runtimeconfig.json
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\bin\Debug\netcoreapp3.1\ToDOList.runtimeconfig.dev.json
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\bin\Debug\netcoreapp3.1\ToDOList.dll
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\bin\Debug\netcoreapp3.1\ToDOList.pdb
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.csproj.AssemblyReference.cache
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.AssemblyInfoInputs.cache
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.AssemblyInfo.cs
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.csproj.CoreCompileInputs.cache
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.dll
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.pdb
+C:\Users\Olorunshola.j\Documents\Assignments\todo_application_continue-JoshMcDavid\ToDOList\ToDOList\obj\Debug\netcoreapp3.1\ToDOList.genruntimeconfig.cache

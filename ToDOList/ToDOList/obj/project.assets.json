@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Olorunshola.j\\Documents\\Assignments\\task_todo_application-JoshMcDavid\\ToDOList\\ToDOList\\ToDOList.csproj",
+      "projectUniqueName": "C:\\Users\\Olorunshola.j\\Documents\\Assignments\\todo_application_continue-JoshMcDavid\\ToDOList\\ToDOList\\ToDOList.csproj",
       "projectName": "ToDOList",
-      "projectPath": "C:\\Users\\Olorunshola.j\\Documents\\Assignments\\task_todo_application-JoshMcDavid\\ToDOList\\ToDOList\\ToDOList.csproj",
+      "projectPath": "C:\\Users\\Olorunshola.j\\Documents\\Assignments\\todo_application_continue-JoshMcDavid\\ToDOList\\ToDOList\\ToDOList.csproj",
       "packagesPath": "C:\\Users\\Olorunshola.j\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Olorunshola.j\\Documents\\Assignments\\task_todo_application-JoshMcDavid\\ToDOList\\ToDOList\\obj\\",
+      "outputPath": "C:\\Users\\Olorunshola.j\\Documents\\Assignments\\todo_application_continue-JoshMcDavid\\ToDOList\\ToDOList\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
